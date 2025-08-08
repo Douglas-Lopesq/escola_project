@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="mb-0">
+                    <i class="bi bi-people-fill me-3"></i>
+                    Alunos
+                </h1>
+                <p class="mb-0 mt-2 opacity-75">Gerencie todos os alunos do sistema</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="{% url 'aluno_create' %}" class="btn btn-light btn-lg">
+                    <i class="bi bi-person-plus me-2"></i>
+                    Novo Aluno
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Formulário de Busca e Filtros -->
+    <div class="search-form">
+        <form method="get" class="row g-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" class="form-control" name="search" value="{{ search }}" 
+                           placeholder="Buscar por nome, email ou matrícula...">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <select name="curso" class="form-select">
+                    <option value="">Todos os cursos</option>
+                    {% for curso in cursos %}
+                        <option value="{{ curso.pk }}" {% if selected_curso == curso.pk|stringformat:"s" %}selected{% endif %}>
+                            {{ curso.nome }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="status" class="form-select">
+                    <option value="">Todos os status</option>
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if selected_status == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-search me-2"></i>Buscar
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Lista de Alunos -->
+    {% if alunos %}
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-list-ul me-2"></i>
+                    Lista de Alunos ({{ alunos.count }})
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th><i class="bi bi-person me-2"></i>Nome</th>
+                                <th><i class="bi bi-card-text me-2"></i>Matrícula</th>
+                                <th><i class="bi bi-envelope me-2"></i>Email</th>
+                                <th><i class="bi bi-book me-2"></i>Curso</th>
+                                <th><i class="bi bi-calendar-week me-2"></i>Semestre</th>
+                                <th><i class="bi bi-check-circle me-2"></i>Status</th>
+                                <th><i class="bi bi-telephone me-2"></i>Telefone</th>
+                                <th><i class="bi bi-gear me-2"></i>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for aluno in alunos %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ aluno.nome }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ aluno.matricula }}</span>
+                                    </td>
+                                    <td>
+                                        <i class="bi bi-envelope-fill text-muted me-2"></i>
+                                        {{ aluno.email }}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">
+                                            {{ aluno.curso.nome }}
+                                        </span>
+                                    </td>
+                                    <td>{{ aluno.get_semestre_display }}</td>
+                                    <td>
+                                        {% if aluno.status == 'ativo' %}
+                                            <span class="badge bg-success">{{ aluno.get_status_display }}</span>
+                                        {% elif aluno.status == 'formado' %}
+                                            <span class="badge bg-primary">{{ aluno.get_status_display }}</span>
+                                        {% elif aluno.status == 'inativo' %}
+                                            <span class="badge bg-warning">{{ aluno.get_status_display }}</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">{{ aluno.get_status_display }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ aluno.telefone|default:"Não informado" }}</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{% url 'aluno_detail' aluno.pk %}" class="btn btn-outline-primary">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{% url 'aluno_edit' aluno.pk %}" class="btn btn-outline-warning">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <a href="{% url 'aluno_delete' aluno.pk %}" class="btn btn-outline-danger">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-people" style="font-size: 4rem; color: #6c757d;"></i>
+            <h3 class="mt-3 text-muted">Nenhum aluno encontrado</h3>
+            <p class="text-muted">
+                {% if search or selected_curso %}
+                    Nenhum aluno encontrado com os filtros aplicados.
+                {% else %}
+                    Não há alunos cadastrados no sistema.
+                {% endif %}
+            </p>
+            <a href="{% url 'aluno_create' %}" class="btn btn-success">
+                <i class="bi bi-person-plus me-2"></i>
+                Cadastrar Primeiro Aluno
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

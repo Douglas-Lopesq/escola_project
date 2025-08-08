@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <h1 class="hero-title">
+            <i class="bi bi-mortarboard-fill me-3"></i>
+            Sistema Escolar
+        </h1>
+        <p class="hero-subtitle">
+            Gerencie cursos e alunos de forma simples e eficiente
+        </p>
+        <div class="d-flex gap-3 justify-content-center">
+            <a href="{% url 'curso_create' %}" class="btn btn-light btn-lg">
+                <i class="bi bi-plus-circle me-2"></i>
+                Novo Curso
+            </a>
+            <a href="{% url 'aluno_create' %}" class="btn btn-outline-light btn-lg">
+                <i class="bi bi-person-plus me-2"></i>
+                Novo Aluno
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Estatísticas -->
+    <div class="row mb-5">
+        <div class="col-md-6 mb-4">
+            <div class="stats-card">
+                <div class="stats-number">{{ total_cursos }}</div>
+                <h4><i class="bi bi-book-fill me-2"></i>Cursos Ativos</h4>
+                <p class="mb-0">Total de cursos disponíveis no sistema</p>
+                <a href="{% url 'curso_list' %}" class="btn btn-light mt-3">
+                    <i class="bi bi-eye me-2"></i>Ver Todos
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="stats-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                <div class="stats-number">{{ total_alunos }}</div>
+                <h4><i class="bi bi-people-fill me-2"></i>Alunos Ativos</h4>
+                <p class="mb-0">Total de alunos matriculados</p>
+                <a href="{% url 'aluno_list' %}" class="btn btn-light mt-3">
+                    <i class="bi bi-eye me-2"></i>Ver Todos
+                </a>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="stats-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                <div class="stats-number">{{ total_formados }}</div>
+                <h4><i class="bi bi-mortarboard-fill me-2"></i>Alunos Formados</h4>
+                <p class="mb-0">Total de alunos que concluíram</p>
+                <a href="{% url 'aluno_list' %}?status=formado" class="btn btn-light mt-3">
+                    <i class="bi bi-eye me-2"></i>Ver Formados
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recursos -->
+    <div class="row">
+        <div class="col-12 mb-4">
+            <h2 class="text-center mb-5">Recursos do Sistema</h2>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="bi bi-book"></i>
+                    </div>
+                    <h5 class="card-title">Gestão de Cursos</h5>
+                    <p class="card-text">Crie, edite e gerencie cursos com informações detalhadas como carga horária e descrição.</p>
+                    <a href="{% url 'curso_list' %}" class="btn btn-primary">
+                        <i class="bi bi-arrow-right me-2"></i>Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="bi bi-people"></i>
+                    </div>
+                    <h5 class="card-title">Gestão de Alunos</h5>
+                    <p class="card-text">Cadastre e gerencie informações dos alunos, incluindo dados pessoais e matrícula em cursos.</p>
+                    <a href="{% url 'aluno_list' %}" class="btn btn-success">
+                        <i class="bi bi-arrow-right me-2"></i>Acessar
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <div class="feature-icon">
+                        <i class="bi bi-search"></i>
+                    </div>
+                    <h5 class="card-title">Busca Avançada</h5>
+                    <p class="card-text">Encontre rapidamente cursos e alunos usando nosso sistema de busca inteligente.</p>
+                    <a href="{% url 'curso_list' %}" class="btn btn-info">
+                        <i class="bi bi-arrow-right me-2"></i>Experimentar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

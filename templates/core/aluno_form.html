@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 class="mb-0">
+            <i class="bi bi-{% if aluno %}pencil{% else %}person-plus{% endif %} me-3"></i>
+            {{ title }}
+        </h1>
+        <p class="mb-0 mt-2 opacity-75">
+            {% if aluno %}Edite as informações do aluno{% else %}Preencha os dados do novo aluno{% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-form me-2"></i>
+                        Dados do Aluno
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="nome" class="form-label">
+                                    <i class="bi bi-person me-2"></i>
+                                    Nome Completo *
+                                </label>
+                                <input type="text" class="form-control" id="nome" name="nome" 
+                                       value="{{ aluno.nome|default:'' }}" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="matricula" class="form-label">
+                                    <i class="bi bi-card-text me-2"></i>
+                                    Matrícula *
+                                </label>
+                                <input type="text" class="form-control" id="matricula" name="matricula" 
+                                       value="{{ aluno.matricula|default:'' }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">
+                                    <i class="bi bi-envelope me-2"></i>
+                                    Email *
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       value="{{ aluno.email|default:'' }}" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="telefone" class="form-label">
+                                    <i class="bi bi-telephone me-2"></i>
+                                    Telefone
+                                </label>
+                                <input type="tel" class="form-control" id="telefone" name="telefone" 
+                                       value="{{ aluno.telefone|default:'' }}" placeholder="(11) 99999-9999">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="data_nascimento" class="form-label">
+                                    <i class="bi bi-calendar me-2"></i>
+                                    Data de Nascimento *
+                                </label>
+                                <input type="date" class="form-control" id="data_nascimento" name="data_nascimento" 
+                                       value="{{ aluno.data_nascimento|date:'Y-m-d'|default:'' }}" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="semestre" class="form-label">
+                                    <i class="bi bi-calendar-week me-2"></i>
+                                    Semestre *
+                                </label>
+                                <select class="form-select" id="semestre" name="semestre" required>
+                                    {% for value, label in aluno.SEMESTRE_CHOICES %}
+                                        <option value="{{ value }}" 
+                                                {% if aluno.semestre == value %}selected{% endif %}>
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="status" class="form-label">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    Status *
+                                </label>
+                                <select class="form-select" id="status" name="status" required>
+                                    {% for value, label in aluno.STATUS_CHOICES %}
+                                        <option value="{{ value }}" 
+                                                {% if aluno.status == value %}selected{% endif %}>
+                                            {{ label }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="curso" class="form-label">
+                                    <i class="bi bi-book me-2"></i>
+                                    Curso *
+                                </label>
+                                <select class="form-select" id="curso" name="curso" required>
+                                    <option value="">Selecione um curso</option>
+                                    {% for curso in cursos %}
+                                        <option value="{{ curso.pk }}" 
+                                                {% if aluno.curso_id == curso.pk %}selected{% endif %}>
+                                            {{ curso.nome }} ({{ curso.carga_horaria }}h)
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-3 justify-content-end">
+                            <a href="{% if aluno %}{% url 'aluno_detail' aluno.pk %}{% else %}{% url 'aluno_list' %}{% endif %}" 
+                               class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>
+                                Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-{% if aluno %}warning{% else %}success{% endif %}">
+                                <i class="bi bi-{% if aluno %}pencil{% else %}check{% endif %} me-2"></i>
+                                {% if aluno %}Atualizar{% else %}Cadastrar{% endif %} Aluno
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Dica -->
+            <div class="alert alert-info mt-4">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong>Dica:</strong> Preencha todos os campos obrigatórios marcados com (*). 
+                O telefone é opcional mas recomendado para contato direto com o aluno.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

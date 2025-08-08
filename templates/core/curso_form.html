@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1 class="mb-0">
+            <i class="bi bi-{% if curso %}pencil{% else %}plus-circle{% endif %} me-3"></i>
+            {{ title }}
+        </h1>
+        <p class="mb-0 mt-2 opacity-75">
+            {% if curso %}Edite as informações do curso{% else %}Preencha os dados do novo curso{% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-form me-2"></i>
+                        Dados do Curso
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">
+                                <i class="bi bi-book me-2"></i>
+                                Nome do Curso *
+                            </label>
+                            <input type="text" class="form-control" id="nome" name="nome" 
+                                   value="{{ curso.nome|default:'' }}" required>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="codigo" class="form-label">
+                                    <i class="bi bi-hash me-2"></i>
+                                    Código do Curso *
+                                </label>
+                                <input type="text" class="form-control" id="codigo" name="codigo" 
+                                       value="{{ curso.codigo|default:'' }}" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="coordenador" class="form-label">
+                                    <i class="bi bi-person-badge me-2"></i>
+                                    Coordenador *
+                                </label>
+                                <input type="text" class="form-control" id="coordenador" name="coordenador" 
+                                       value="{{ curso.coordenador|default:'' }}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="descricao" class="form-label">
+                                <i class="bi bi-text-paragraph me-2"></i>
+                                Descrição
+                            </label>
+                            <textarea class="form-control" id="descricao" name="descricao" 
+                                      rows="4" placeholder="Descreva o curso...">{{ curso.descricao|default:'' }}</textarea>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="carga_horaria" class="form-label">
+                                <i class="bi bi-clock me-2"></i>
+                                Carga Horária (horas) *
+                            </label>
+                            <input type="number" class="form-control" id="carga_horaria" name="carga_horaria" 
+                                   value="{{ curso.carga_horaria|default:'' }}" min="1" required>
+                        </div>
+                        
+                        <div class="d-flex gap-3 justify-content-end">
+                            <a href="{% if curso %}{% url 'curso_detail' curso.pk %}{% else %}{% url 'curso_list' %}{% endif %}" 
+                               class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>
+                                Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-{% if curso %}warning{% else %}success{% endif %}">
+                                <i class="bi bi-{% if curso %}pencil{% else %}check{% endif %} me-2"></i>
+                                {% if curso %}Atualizar{% else %}Criar{% endif %} Curso
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Dica -->
+            <div class="alert alert-info mt-4">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong>Dica:</strong> Preencha todos os campos obrigatórios marcados com (*). 
+                A descrição é opcional mas recomendada para melhor identificação do curso.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

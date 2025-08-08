@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="mb-0">
+                    <i class="bi bi-book-fill me-3"></i>
+                    {{ curso.nome }}
+                </h1>
+                <p class="mb-0 mt-2 opacity-75">Detalhes do curso</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <div class="btn-group">
+                    <a href="{% url 'curso_edit' curso.pk %}" class="btn btn-warning">
+                        <i class="bi bi-pencil me-2"></i>Editar
+                    </a>
+                    <a href="{% url 'curso_delete' curso.pk %}" class="btn btn-danger">
+                        <i class="bi bi-trash me-2"></i>Excluir
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <!-- Informações do Curso -->
+        <div class="col-md-8 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Informações do Curso
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Nome:</label>
+                            <p class="mb-0">{{ curso.nome }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Código:</label>
+                            <p class="mb-0">
+                                <span class="badge bg-secondary fs-6">
+                                    <i class="bi bi-hash me-1"></i>
+                                    {{ curso.codigo }}
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Coordenador:</label>
+                            <p class="mb-0">{{ curso.coordenador }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Carga Horária:</label>
+                            <p class="mb-0">
+                                <span class="badge bg-info fs-6">
+                                    <i class="bi bi-clock me-1"></i>
+                                    {{ curso.carga_horaria }} horas
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label class="form-label fw-bold">Descrição:</label>
+                            <p class="mb-0">{{ curso.descricao|default:"Sem descrição" }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Criado em:</label>
+                            <p class="mb-0">{{ curso.created_at|date:"d/m/Y H:i" }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-bold">Última atualização:</label>
+                            <p class="mb-0">{{ curso.updated_at|date:"d/m/Y H:i" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Estatísticas -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-bar-chart me-2"></i>
+                        Estatísticas
+                    </h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="stats-card mb-3" style="padding: 1.5rem;">
+                        <div class="stats-number" style="font-size: 2.5rem;">{{ alunos.count }}</div>
+                        <h6>Aluno{{ alunos.count|pluralize }} Ativo{{ alunos.count|pluralize }}</h6>
+                    </div>
+                    <a href="{% url 'aluno_create' %}" class="btn btn-success w-100">
+                        <i class="bi bi-person-plus me-2"></i>
+                        Matricular Aluno
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lista de Alunos -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-people-fill me-2"></i>
+                Alunos Ativos ({{ alunos.count }})
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if alunos %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th><i class="bi bi-person me-2"></i>Nome</th>
+                                <th><i class="bi bi-card-text me-2"></i>Matrícula</th>
+                                <th><i class="bi bi-envelope me-2"></i>Email</th>
+                                <th><i class="bi bi-calendar-week me-2"></i>Semestre</th>
+                                <th><i class="bi bi-telephone me-2"></i>Telefone</th>
+                                <th><i class="bi bi-gear me-2"></i>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for aluno in alunos %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ aluno.nome }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ aluno.matricula }}</span>
+                                    </td>
+                                    <td>{{ aluno.email }}</td>
+                                    <td>{{ aluno.get_semestre_display }}</td>
+                                    <td>{{ aluno.telefone|default:"Não informado" }}</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{% url 'aluno_detail' aluno.pk %}" class="btn btn-outline-primary">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a href="{% url 'aluno_edit' aluno.pk %}" class="btn btn-outline-warning">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="text-center py-4">
+                    <i class="bi bi-people" style="font-size: 3rem; color: #6c757d;"></i>
+                    <h5 class="mt-3 text-muted">Nenhum aluno ativo</h5>
+                    <p class="text-muted">Este curso não possui alunos ativos no momento.</p>
+                    <a href="{% url 'aluno_create' %}" class="btn btn-success">
+                        <i class="bi bi-person-plus me-2"></i>
+                        Matricular Aluno
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Navegação -->
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{% url 'curso_list' %}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left me-2"></i>
+            Voltar para Lista
+        </a>
+        <div class="btn-group">
+            <a href="{% url 'curso_edit' curso.pk %}" class="btn btn-warning">
+                <i class="bi bi-pencil me-2"></i>Editar Curso
+            </a>
+            <a href="{% url 'curso_delete' curso.pk %}" class="btn btn-danger">
+                <i class="bi bi-trash me-2"></i>Excluir Curso
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
