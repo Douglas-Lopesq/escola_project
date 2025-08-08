@@ -67,7 +67,7 @@
                                 </span>
                                 <span class="badge bg-success">
                                     <i class="bi bi-people me-1"></i>
-                                    {{ curso.alunos.filter.ativo=True.status='ativo'.count }} ativo{{ curso.alunos.filter.ativo=True.status='ativo'.count|pluralize }}
+                                    {{ curso.total_alunos_ativos }} aluno{{ curso.total_alunos_ativos|pluralize }} ativo{{ curso.total_alunos_ativos|pluralize }}
                                 </span>
                             </div>
                         </div>

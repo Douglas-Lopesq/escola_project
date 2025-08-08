@@ -149,23 +149,23 @@ class AlunoListView(TitleMixin, BreadcrumbMixin, ActiveObjectsMixin, ListView):
     ]
     
     def get_queryset(self):
-        queryset = super().get_queryset().select_related('curso')
+        queryset = super().get_queryset()
         search = self.request.GET.get('search', '')
-        curso_id = self.request.GET.get('curso', '')
-        status = self.request.GET.get('status', '')
-        
+
         if search:
             queryset = queryset.filter(
-                Q(nome__icontains=search) | Q(email__icontains=search) | Q(matricula__icontains=search)
+                Q(nome__icontains=search) | Q(descricao__icontains=search)
             )
-        
-        if curso_id:
-            queryset = queryset.filter(curso_id=curso_id)
-        
-        if status:
-            queryset = queryset.filter(status=status)
-        
-        return queryset.order_by('nome')
+
+        cursos = list(queryset.order_by('nome'))
+
+        # Adiciona contagem de alunos ativos/inativos
+        for curso in cursos:
+            curso.total_alunos_ativos = curso.alunos.filter(status='ativo').count()
+            curso.total_alunos_inativos = curso.alunos.filter(status='inativo').count()
+
+        return cursos
+
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
